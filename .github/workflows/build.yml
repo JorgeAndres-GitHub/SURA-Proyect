@@ -49,12 +49,12 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           
-          [System.Console]::WriteLine("🚀 Starting SonarQube analysis from repository root...")
+          Write-Host "Starting SonarQube analysis from repository root..."
           
           $scanner = ".\.sonar\scanner\dotnet-sonarscanner"
           
           # Begin SonarQube analysis
-          [System.Console]::WriteLine("📋 Starting SonarScanner begin...")
+          Write-Host "Starting SonarScanner begin..."
           & $scanner begin `
             /k:"TU_PROYECTO_SONARCLOUD" `
             /o:"TU_ORGANIZACION_SONARCLOUD" `
@@ -63,22 +63,22 @@ jobs:
             /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
           
           if ($LASTEXITCODE -ne 0) {
-            [System.Console]::WriteLine("❌ SonarScanner begin failed with exit code: $LASTEXITCODE")
+            Write-Host "ERROR: SonarScanner begin failed with exit code: $LASTEXITCODE"
             exit $LASTEXITCODE
           }
           
           # Restore dependencies
-          [System.Console]::WriteLine("📦 Restoring dependencies...")
+          Write-Host "Restoring dependencies..."
           dotnet restore SURAConcept.sln
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           
           # Build solution
-          [System.Console]::WriteLine("🔨 Building solution...")
+          Write-Host "Building solution..."
           dotnet build SURAConcept.sln --no-restore --configuration Release
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           
           # Run tests with coverage
-          [System.Console]::WriteLine("🧪 Running tests with coverage...")
+          Write-Host "Running tests with coverage..."
           dotnet test TestSURAConcept/TestSURAConcept.csproj `
             --no-build `
             --configuration Release `
@@ -88,23 +88,23 @@ jobs:
             /p:CoverletOutput=./coverage.opencover.xml
           
           if ($LASTEXITCODE -ne 0) { 
-            [System.Console]::WriteLine("⚠️ Tests failed but continuing with analysis...")
+            Write-Host "WARNING: Tests failed but continuing with analysis..."
           }
           
           # Verify coverage file exists
           if (Test-Path "TestSURAConcept/coverage.opencover.xml") {
-            [System.Console]::WriteLine("✅ Coverage file found at: TestSURAConcept/coverage.opencover.xml")
+            Write-Host "SUCCESS: Coverage file found at: TestSURAConcept/coverage.opencover.xml"
           } else {
-            [System.Console]::WriteLine("⚠️ Coverage file not found, analysis will continue without coverage data")
+            Write-Host "WARNING: Coverage file not found, analysis will continue without coverage data"
           }
           
           # End SonarQube analysis
-          [System.Console]::WriteLine("📊 Ending SonarScanner analysis...")
+          Write-Host "Ending SonarScanner analysis..."
           & $scanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           
           if ($LASTEXITCODE -ne 0) {
-            [System.Console]::WriteLine("❌ SonarScanner end failed with exit code: $LASTEXITCODE")
+            Write-Host "ERROR: SonarScanner end failed with exit code: $LASTEXITCODE"
             exit $LASTEXITCODE
           }
           
-          [System.Console]::WriteLine("🎯 SonarQube analysis completed successfully.")
+          Write-Host "SonarQube analysis completed successfully."
