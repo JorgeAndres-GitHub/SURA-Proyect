@@ -25,6 +25,10 @@ RUN dotnet publish "./SURAConcept.csproj" -c $BUILD_CONFIGURATION -o /app/publis
 
 # Esta fase se usa en producción o cuando se ejecuta desde VS en modo normal (valor predeterminado cuando no se usa la configuración de depuración)
 FROM base AS final
+
+RUN addgroup -S nonroot && adduser -S nonroot -G nonroot
+USER nonroot
+
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SURAConcept.dll"]
