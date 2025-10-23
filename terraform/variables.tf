@@ -1,5 +1,5 @@
 variable "aws_region" {
-  description = "Región de AWS"
+  description = "Región AWS"
   type        = string
   default     = "us-east-1"
 }
@@ -15,7 +15,13 @@ variable "docker_tag" {
   default     = "latest"
 }
 
-variable "key_name" {
-  description = "Nombre del par de claves SSH para EC2"
+variable "ami_id" {
+  description = "AMI de Ubuntu (por defecto us-east-1)"
+  type        = string
+  default     = "ami-0c7217cdde317cfec" # Ubuntu 22.04
+}
+
+variable "ssh_public_key" {
+  description = "Clave pública SSH para acceder al EC2"
   type        = string
 }
