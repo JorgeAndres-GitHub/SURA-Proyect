@@ -77,5 +77,26 @@ namespace TestSURAConcept
             Assert.Equal(45, result.Score); // 20 (edad) + 15 (vehicular) + 10 (1 reclamo)
             Assert.Equal("Medio", result.RiskLevel);
         }
+
+        [Fact]
+        public void CalculateRisk_UnknownInsuranceType_ReturnsDefaultScore()
+        {
+            // Arrange
+            var client = new ClientData
+            {
+                Name = "Ana Ruiz",
+                Age = 40,
+                InsuranceType = "hogar", // tipo no contemplado
+                ClaimsCount = 0
+            };
+
+            // Act
+            var result = _riskEvaluator.CalculateRisk(client);
+
+            // Assert
+            Assert.Equal(5, result.Score); // solo el valor por defecto del tipo de seguro
+            Assert.Equal("Bajo", result.RiskLevel);
+        }
+
     }
 }
