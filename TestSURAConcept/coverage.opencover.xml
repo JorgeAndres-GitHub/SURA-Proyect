@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CoverageSession>
+  <Summary numSequencePoints="54" visitedSequencePoints="39" numBranchPoints="18" visitedBranchPoints="10" sequenceCoverage="72.22" branchCoverage="55.55" maxCyclomaticComplexity="26" minCyclomaticComplexity="26" visitedClasses="4" numClasses="5" visitedMethods="10" numMethods="11" />
+  <Modules>
+    <Module hash="03155814-D64D-4D57-8A7E-B76787883FCF">
+      <ModulePath>SURAConcept.dll</ModulePath>
+      <ModuleTime>2025-10-23T02:24:15</ModuleTime>
+      <ModuleName>SURAConcept</ModuleName>
+      <Files>
+        <File uid="1" fullPath="C:\Users\User\OneDrive\Escritorio\SURAConcept\SURAConcept\Program.cs" />
+        <File uid="2" fullPath="C:\Users\User\OneDrive\Escritorio\SURAConcept\SURAConcept\Services\RiskEvaluator.cs" />
+        <File uid="3" fullPath="C:\Users\User\OneDrive\Escritorio\SURAConcept\SURAConcept\Models\ClientData.cs" />
+        <File uid="4" fullPath="C:\Users\User\OneDrive\Escritorio\SURAConcept\SURAConcept\Models\RiskResult.cs" />
+        <File uid="5" fullPath="C:\Users\User\OneDrive\Escritorio\SURAConcept\SURAConcept\Controllers\RiskEvaluationController.cs" />
+      </Files>
+      <Classes>
+        <Class>
+          <Summary numSequencePoints="12" visitedSequencePoints="0" numBranchPoints="2" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="0" maxCyclomaticComplexity="2" minCyclomaticComplexity="2" visitedClasses="0" numClasses="1" visitedMethods="0" numMethods="1" />
+          <FullName>Program</FullName>
+          <Methods>
+            <Method cyclomaticComplexity="2" nPathComplexity="2" sequenceCoverage="0" branchCoverage="0" isConstructor="False" isGetter="False" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="12" visitedSequencePoints="0" numBranchPoints="2" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="0" maxCyclomaticComplexity="2" minCyclomaticComplexity="2" visitedClasses="0" numClasses="0" visitedMethods="0" numMethods="1" />
+              <MetadataToken />
+              <Name>System.Void Program::&lt;Main&gt;$(System.String[])</Name>
+              <FileRef uid="1" />
+              <SequencePoints>
+                <SequencePoint vc="0" uspid="1" ordinal="0" sl="1" sc="1" el="1" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="5" ordinal="1" sl="5" sc="1" el="5" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="7" ordinal="2" sl="7" sc="1" el="7" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="9" ordinal="3" sl="9" sc="1" el="9" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="12" ordinal="4" sl="12" sc="1" el="12" ec="2" bec="2" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="13" ordinal="5" sl="13" sc="1" el="13" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="14" ordinal="6" sl="14" sc="1" el="14" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="15" ordinal="7" sl="15" sc="1" el="15" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="17" ordinal="8" sl="17" sc="1" el="17" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="19" ordinal="9" sl="19" sc="1" el="19" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="21" ordinal="10" sl="21" sc="1" el="21" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="23" ordinal="11" sl="23" sc="1" el="23" ec="2" bec="0" bev="0" fileid="1" />
+              </SequencePoints>
+              <BranchPoints>
+                <BranchPoint vc="0" uspid="12" ordinal="0" path="0" offset="51" offsetend="53" sl="12" fileid="1" />
+                <BranchPoint vc="0" uspid="12" ordinal="1" path="1" offset="51" offsetend="67" sl="12" fileid="1" />
+              </BranchPoints>
+              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="0" offset="0" sc="0" sl="1" ec="1" el="23" bec="0" bev="0" fileid="1" xmlns:p8="xsi" />
+            </Method>
+          </Methods>
+        </Class>
+        <Class>
+          <Summary numSequencePoints="25" visitedSequencePoints="22" numBranchPoints="14" visitedBranchPoints="8" sequenceCoverage="88" branchCoverage="57.14" maxCyclomaticComplexity="14" minCyclomaticComplexity="14" visitedClasses="1" numClasses="1" visitedMethods="1" numMethods="1" />
+          <FullName>SURAConcept.Services.RiskEvaluator</FullName>
+          <Methods>
+            <Method cyclomaticComplexity="14" nPathComplexity="14" sequenceCoverage="88" branchCoverage="57.14" isConstructor="False" isGetter="False" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="25" visitedSequencePoints="22" numBranchPoints="14" visitedBranchPoints="8" sequenceCoverage="88" branchCoverage="57.14" maxCyclomaticComplexity="14" minCyclomaticComplexity="14" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+              <MetadataToken />
+              <Name>SURAConcept.Models.RiskResult SURAConcept.Services.RiskEvaluator::CalculateRisk(SURAConcept.Models.ClientData)</Name>
+              <FileRef uid="2" />
+              <SequencePoints>
+                <SequencePoint vc="2" uspid="8" ordinal="0" sl="8" sc="1" el="8" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="9" ordinal="1" sl="9" sc="1" el="9" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="12" ordinal="2" sl="12" sc="1" el="12" ec="2" bec="2" bev="1" fileid="2" />
+                <SequencePoint vc="2" uspid="13" ordinal="3" sl="13" sc="1" el="13" ec="2" bec="2" bev="1" fileid="2" />
+                <SequencePoint vc="2" uspid="16" ordinal="4" sl="16" sc="1" el="16" ec="2" bec="6" bev="3" fileid="2" />
+                <SequencePoint vc="2" uspid="17" ordinal="5" sl="17" sc="1" el="17" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="1" uspid="18" ordinal="6" sl="18" sc="1" el="18" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="1" uspid="19" ordinal="7" sl="19" sc="1" el="19" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="20" ordinal="8" sl="20" sc="1" el="20" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="21" ordinal="9" sl="21" sc="1" el="21" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="22" ordinal="10" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="25" ordinal="11" sl="25" sc="1" el="25" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="27" ordinal="12" sl="27" sc="1" el="27" ec="2" bec="4" bev="3" fileid="2" />
+                <SequencePoint vc="2" uspid="28" ordinal="13" sl="28" sc="1" el="28" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="1" uspid="29" ordinal="14" sl="29" sc="1" el="29" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="30" ordinal="15" sl="30" sc="1" el="30" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="1" uspid="31" ordinal="16" sl="31" sc="1" el="31" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="32" ordinal="17" sl="32" sc="1" el="32" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="34" ordinal="18" sl="34" sc="1" el="34" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="35" ordinal="19" sl="35" sc="1" el="35" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="36" ordinal="20" sl="36" sc="1" el="36" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="37" ordinal="21" sl="37" sc="1" el="37" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="38" ordinal="22" sl="38" sc="1" el="38" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="39" ordinal="23" sl="39" sc="1" el="39" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="2" uspid="40" ordinal="24" sl="40" sc="1" el="40" ec="2" bec="0" bev="0" fileid="2" />
+              </SequencePoints>
+              <BranchPoints>
+                <BranchPoint vc="0" uspid="12" ordinal="0" path="0" offset="23" offsetend="25" sl="12" fileid="2" />
+                <BranchPoint vc="2" uspid="12" ordinal="1" path="1" offset="23" offsetend="39" sl="12" fileid="2" />
+                <BranchPoint vc="0" uspid="13" ordinal="2" path="0" offset="51" offsetend="53" sl="13" fileid="2" />
+                <BranchPoint vc="2" uspid="13" ordinal="3" path="1" offset="51" offsetend="65" sl="13" fileid="2" />
+                <BranchPoint vc="1" uspid="16" ordinal="4" path="0" offset="97" offsetend="99" sl="16" fileid="2" />
+                <BranchPoint vc="0" uspid="16" ordinal="6" path="0" offset="111" offsetend="113" sl="16" fileid="2" />
+                <BranchPoint vc="1" uspid="16" ordinal="5" path="1" offset="97" offsetend="129" sl="16" fileid="2" />
+                <BranchPoint vc="1" uspid="16" ordinal="7" path="1" offset="111" offsetend="135" sl="16" fileid="2" />
+                <BranchPoint vc="0" uspid="16" ordinal="9" path="1" offset="125" offsetend="141" sl="16" fileid="2" />
+                <BranchPoint vc="0" uspid="16" ordinal="8" path="0" offset="125" offsetend="147" sl="16" fileid="2" />
+                <BranchPoint vc="1" uspid="27" ordinal="10" path="0" offset="190" offsetend="192" sl="27" fileid="2" />
+                <BranchPoint vc="1" uspid="27" ordinal="11" path="1" offset="190" offsetend="206" sl="27" fileid="2" />
+                <BranchPoint vc="0" uspid="27" ordinal="13" path="1" offset="202" offsetend="215" sl="27" fileid="2" />
+                <BranchPoint vc="1" uspid="27" ordinal="12" path="0" offset="202" offsetend="224" sl="27" fileid="2" />
+              </BranchPoints>
+              <MethodPoint vc="22" uspid="0" p8:type="SequencePoint" ordinal="0" offset="0" sc="0" sl="8" ec="1" el="40" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
+            </Method>
+          </Methods>
+        </Class>
+        <Class>
+          <Summary numSequencePoints="4" visitedSequencePoints="4" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="1" numClasses="1" visitedMethods="4" numMethods="4" />
+          <FullName>SURAConcept.Models.ClientData</FullName>
+          <Methods>
+            <Method cyclomaticComplexity="1" nPathComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="False" isGetter="True" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="1" visitedSequencePoints="1" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+              <MetadataToken />
+              <Name>System.String SURAConcept.Models.ClientData::get_Name()</Name>
+              <FileRef uid="3" />
+              <SequencePoints>
+                <SequencePoint vc="6" uspid="5" ordinal="0" sl="5" sc="1" el="5" ec="2" bec="0" bev="0" fileid="3" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="0" offset="0" sc="0" sl="5" ec="1" el="5" bec="0" bev="0" fileid="3" xmlns:p8="xsi" />
+            </Method>
+            <Method cyclomaticComplexity="1" nPathComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="False" isGetter="True" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="1" visitedSequencePoints="1" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+              <MetadataToken />
+              <Name>System.Int32 SURAConcept.Models.ClientData::get_Age()</Name>
+              <FileRef uid="3" />
+              <SequencePoints>
+                <SequencePoint vc="6" uspid="6" ordinal="0" sl="6" sc="1" el="6" ec="2" bec="0" bev="0" fileid="3" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="1" offset="1" sc="0" sl="6" ec="1" el="6" bec="0" bev="0" fileid="3" xmlns:p8="xsi" />
+            </Method>
+            <Method cyclomaticComplexity="1" nPathComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="False" isGetter="True" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="1" visitedSequencePoints="1" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+              <MetadataToken />
+              <Name>System.String SURAConcept.Models.ClientData::get_InsuranceType()</Name>
+              <FileRef uid="3" />
+              <SequencePoints>
+                <SequencePoint vc="6" uspid="7" ordinal="0" sl="7" sc="1" el="7" ec="2" bec="0" bev="0" fileid="3" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="2" offset="2" sc="0" sl="7" ec="1" el="7" bec="0" bev="0" fileid="3" xmlns:p8="xsi" />
+            </Method>
+            <Method cyclomaticComplexity="1" nPathComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="False" isGetter="True" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="1" visitedSequencePoints="1" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+              <MetadataToken />
+              <Name>System.Int32 SURAConcept.Models.ClientData::get_ClaimsCount()</Name>
+              <FileRef uid="3" />
+              <SequencePoints>
+                <SequencePoint vc="4" uspid="8" ordinal="0" sl="8" sc="1" el="8" ec="2" bec="0" bev="0" fileid="3" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="3" offset="3" sc="0" sl="8" ec="1" el="8" bec="0" bev="0" fileid="3" xmlns:p8="xsi" />
+            </Method>
+          </Methods>
+        </Class>
+        <Class>
+          <Summary numSequencePoints="3" visitedSequencePoints="3" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="1" numClasses="1" visitedMethods="3" numMethods="3" />
+          <FullName>SURAConcept.Models.RiskResult</FullName>
+          <Methods>
+            <Method cyclomaticComplexity="1" nPathComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="False" isGetter="True" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="1" visitedSequencePoints="1" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+              <MetadataToken />
+              <Name>System.String SURAConcept.Models.RiskResult::get_ClientName()</Name>
+              <FileRef uid="4" />
+              <SequencePoints>
+                <SequencePoint vc="4" uspid="5" ordinal="0" sl="5" sc="1" el="5" ec="2" bec="0" bev="0" fileid="4" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="0" offset="0" sc="0" sl="5" ec="1" el="5" bec="0" bev="0" fileid="4" xmlns:p8="xsi" />
+            </Method>
+            <Method cyclomaticComplexity="1" nPathComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="False" isGetter="True" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="1" visitedSequencePoints="1" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+              <MetadataToken />
+              <Name>System.String SURAConcept.Models.RiskResult::get_RiskLevel()</Name>
+              <FileRef uid="4" />
+              <SequencePoints>
+                <SequencePoint vc="6" uspid="6" ordinal="0" sl="6" sc="1" el="6" ec="2" bec="0" bev="0" fileid="4" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="1" offset="1" sc="0" sl="6" ec="1" el="6" bec="0" bev="0" fileid="4" xmlns:p8="xsi" />
+            </Method>
+            <Method cyclomaticComplexity="1" nPathComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="False" isGetter="True" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="1" visitedSequencePoints="1" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+              <MetadataToken />
+              <Name>System.Double SURAConcept.Models.RiskResult::get_Score()</Name>
+              <FileRef uid="4" />
+              <SequencePoints>
+                <SequencePoint vc="2" uspid="7" ordinal="0" sl="7" sc="1" el="7" ec="2" bec="0" bev="0" fileid="4" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="2" offset="2" sc="0" sl="7" ec="1" el="7" bec="0" bev="0" fileid="4" xmlns:p8="xsi" />
+            </Method>
+          </Methods>
+        </Class>
+        <Class>
+          <Summary numSequencePoints="10" visitedSequencePoints="10" numBranchPoints="2" visitedBranchPoints="2" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="2" minCyclomaticComplexity="1" visitedClasses="1" numClasses="1" visitedMethods="2" numMethods="2" />
+          <FullName>SURAConcept.Controllers.RiskEvaluationController</FullName>
+          <Methods>
+            <Method cyclomaticComplexity="2" nPathComplexity="2" sequenceCoverage="100" branchCoverage="100" isConstructor="False" isGetter="False" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="6" visitedSequencePoints="6" numBranchPoints="2" visitedBranchPoints="2" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="2" minCyclomaticComplexity="2" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+              <MetadataToken />
+              <Name>Microsoft.AspNetCore.Mvc.ActionResult`1&lt;SURAConcept.Models.RiskResult&gt; SURAConcept.Controllers.RiskEvaluationController::EvaluateRisk(SURAConcept.Models.ClientData)</Name>
+              <FileRef uid="5" />
+              <SequencePoints>
+                <SequencePoint vc="3" uspid="21" ordinal="0" sl="21" sc="1" el="21" ec="2" bec="0" bev="0" fileid="5" />
+                <SequencePoint vc="3" uspid="22" ordinal="1" sl="22" sc="1" el="22" ec="2" bec="2" bev="2" fileid="5" />
+                <SequencePoint vc="1" uspid="23" ordinal="2" sl="23" sc="1" el="23" ec="2" bec="0" bev="0" fileid="5" />
+                <SequencePoint vc="2" uspid="25" ordinal="3" sl="25" sc="1" el="25" ec="2" bec="0" bev="0" fileid="5" />
+                <SequencePoint vc="2" uspid="26" ordinal="4" sl="26" sc="1" el="26" ec="2" bec="0" bev="0" fileid="5" />
+                <SequencePoint vc="3" uspid="27" ordinal="5" sl="27" sc="1" el="27" ec="2" bec="0" bev="0" fileid="5" />
+              </SequencePoints>
+              <BranchPoints>
+                <BranchPoint vc="1" uspid="22" ordinal="0" path="0" offset="7" offsetend="9" sl="22" fileid="5" />
+                <BranchPoint vc="2" uspid="22" ordinal="1" path="1" offset="7" offsetend="28" sl="22" fileid="5" />
+              </BranchPoints>
+              <MethodPoint vc="6" uspid="0" p8:type="SequencePoint" ordinal="0" offset="0" sc="0" sl="21" ec="1" el="27" bec="0" bev="0" fileid="5" xmlns:p8="xsi" />
+            </Method>
+            <Method cyclomaticComplexity="1" nPathComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="True" isGetter="False" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="4" visitedSequencePoints="4" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+              <MetadataToken />
+              <Name>System.Void SURAConcept.Controllers.RiskEvaluationController::.ctor(SURAConcept.Services.RiskEvaluator)</Name>
+              <FileRef uid="5" />
+              <SequencePoints>
+                <SequencePoint vc="3" uspid="14" ordinal="0" sl="14" sc="1" el="14" ec="2" bec="0" bev="0" fileid="5" />
+                <SequencePoint vc="3" uspid="15" ordinal="1" sl="15" sc="1" el="15" ec="2" bec="0" bev="0" fileid="5" />
+                <SequencePoint vc="3" uspid="16" ordinal="2" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="5" />
+                <SequencePoint vc="3" uspid="17" ordinal="3" sl="17" sc="1" el="17" ec="2" bec="0" bev="0" fileid="5" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="4" uspid="0" p8:type="SequencePoint" ordinal="1" offset="1" sc="0" sl="14" ec="1" el="17" bec="0" bev="0" fileid="5" xmlns:p8="xsi" />
+            </Method>
+          </Methods>
+        </Class>
+      </Classes>
+    </Module>
+  </Modules>
+</CoverageSession>
