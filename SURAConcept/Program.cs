@@ -24,6 +24,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Health check endpoint para AWS App Runner
+app.MapGet("/health", () => Results.Ok(new
+{
+    status = "healthy",
+    timestamp = DateTime.UtcNow,
+    service = "SURA API"
+}));
+
 app.Run();
 
 public partial class Program { }
