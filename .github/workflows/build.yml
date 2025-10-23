@@ -1,4 +1,5 @@
 name: SonarQube
+
 on:
   push:
     branches:
@@ -8,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build, Test and Analyze
+    name: Build and analyze
     runs-on: windows-latest
 
     steps:
@@ -33,7 +34,7 @@ jobs:
         id: cache-sonar-scanner
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}\scanner
+          path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
 
@@ -41,39 +42,48 @@ jobs:
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: powershell
         run: |
-          New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Begin SonarQube analysis
+      - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin `
-            /k:"JorgeAndres-GitHub_SURA-Proyect" `
-            /o:"jorgeandres-github" `
+          [System.Console]::WriteLine("Starting SonarQube analysis...")
+
+          # Iniciar el análisis de SonarQube
+          .\.sonar\scanner\dotnet-sonarscanner begin `
+            /k:"TU_PROYECTO_SONARCLOUD" `
+            /o:"TU_ORGANIZACION_SONARCLOUD" `
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-            /d:sonar.cs.opencover.reportsPaths="TestSURAConcept/coverage.opencover.xml" `
-            /d:sonar.verbose=true
+            /d:sonar.host.url="https://sonarcloud.io" `
+            /d:sonar.cs.opencover.reportsPaths="TestSURAConcept/**/coverage.opencover.xml" `
+            /d:sonar.scanner.scanAll=false
 
-      - name: Build solution
-        run: dotnet build --no-restore
+          # Restaurar dependencias y compilar
+          dotnet restore
+          dotnet build --no-restore SURAConcept.sln
 
-      - name: Run unit tests with coverage
-        run: dotnet test .\TestSURAConcept\TestSURAConcept.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=.\TestSURAConcept\coverage.opencover.xml
+          [System.Console]::WriteLine("Build completed. Running tests with coverage...")
 
-      - name: Upload coverage report artifact (optional)
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: TestSURAConcept/coverage.opencover.xml
+          # Ejecutar pruebas unitarias con cobertura de código
+          dotnet test TestSURAConcept/TestSURAConcept.csproj --no-build --verbosity normal `
+            /p:CollectCoverage=true `
+            /p:CoverletOutputFormat=opencover `
+            /p:CoverletOutput=coverage.opencover.xml
 
-      - name: End SonarQube analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: powershell
-        run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          [System.Console]::WriteLine("Checking if coverage.opencover.xml was generated...")
+
+          # Verificar si el archivo de cobertura existe
+          if (Test-Path "TestSURAConcept/coverage.opencover.xml") {
+            [System.Console]::WriteLine("✅ Coverage file found. Proceeding with SonarQube analysis...")
+          } else {
+            [System.Console]::WriteLine("❌ ERROR: coverage.opencover.xml not found. Exiting...")
+            exit 1
+          }
+
+          # Finalizar análisis de SonarQube
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+          [System.Console]::WriteLine("SonarQube analysis completed successfully.")
