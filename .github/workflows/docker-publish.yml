@@ -1,14 +1,10 @@
 name: Build and Push Docker Image
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-  # workflow_run:
-   # workflows: ["build.yml"]
-   # types:
-    #  - completed
+  workflow_run:
+    workflows: ["build.yml"]
+    types:
+      - completed
 
 jobs:
   build-and-push:
