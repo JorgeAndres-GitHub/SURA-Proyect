@@ -1,4 +1,4 @@
-name: Deploy to AWS EC2
+name: Deploy EC2 with Docker Container
 
 on:
   workflow_run:
@@ -38,16 +38,15 @@ jobs:
             -var="docker_image=${{ secrets.DOCKERHUB_USERNAME }}/sura-proyect" \
             -var="docker_tag=latest" \
             -var="aws_region=${{ secrets.AWS_REGION }}" \
-            -var="key_name=${{ secrets.AWS_KEY_NAME }}" \
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
             -out=tfplan
 
       - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
 
-      - name: Get EC2 Info
+      - name: Get Public URL
         working-directory: ./terraform
         run: |
-          PUBLIC_IP=$(terraform output -raw instance_public_ip)
-          echo "🚀 API desplegada exitosamente en EC2"
-          echo "🌐 URL: http://$PUBLIC_IP:8080"
+          echo "✅ API Public URL:"
+          terraform output -raw api_url
