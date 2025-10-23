@@ -5,31 +5,24 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  required_version = ">= 1.6.0"
 }
 
 provider "aws" {
   region = var.aws_region
 }
 
-# VPC y Subnets (usa las default)
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_subnets" "default" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
-}
-
-# Security Group
-resource "aws_security_group" "sura_api" {
+# =============================
+# SECURITY GROUP (puerto 8080)
+# =============================
+resource "aws_security_group" "sura_sg" {
   name        = "sura-api-sg"
-  description = "Security group para SURA API"
+  description = "Permitir acceso HTTP a la API"
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
+    description = "API HTTP"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
@@ -48,148 +41,67 @@ resource "aws_security_group" "sura_api" {
   }
 }
 
-# ECS Cluster
-resource "aws_ecs_cluster" "sura" {
-  name = "sura-cluster"
+# =============================
+# VPC DEFAULT
+# =============================
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnet_ids" "default" {
+  vpc_id = data.aws_vpc.default.id
+}
+
+# =============================
+# EC2 INSTANCE
+# =============================
+resource "aws_instance" "sura_api" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t3.micro" # puedes subir a t3.small si necesitas más RAM
+  subnet_id     = element(data.aws_subnet_ids.default.ids, 0)
+  vpc_security_group_ids = [aws_security_group.sura_sg.id]
+  associate_public_ip_address = true
+  key_name      = var.key_name
+
+  user_data = <<-EOF
+              #!/bin/bash
+              apt-get update -y
+              apt-get install -y docker.io
+              systemctl start docker
+              systemctl enable docker
+              
+              docker pull ${var.docker_image}:${var.docker_tag}
+              docker run -d -p 8080:8080 \
+                -e ASPNETCORE_URLS=http://+:8080 \
+                -e ASPNETCORE_ENVIRONMENT=Production \
+                ${var.docker_image}:${var.docker_tag}
+              EOF
 
   tags = {
-    Name        = "SURA Cluster"
-    Environment = "Production"
-    ManagedBy   = "Terraform"
+    Name = "sura-api-ec2"
   }
 }
 
-# CloudWatch Log Group
-resource "aws_cloudwatch_log_group" "sura_api" {
-  name              = "/ecs/sura-api"
-  retention_in_days = 7
+# =============================
+# OBTENER AMI DE UBUNTU
+# =============================
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = ["099720109477"] # Canonical
 
-  tags = {
-    Name = "sura-api-logs"
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 }
 
-# Task Execution Role
-resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "sura-ecs-task-execution-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-      }
-    ]
-  })
+# =============================
+# OUTPUTS
+# =============================
+output "instance_public_ip" {
+  value = aws_instance.sura_api.public_ip
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-# Task Definition
-resource "aws_ecs_task_definition" "sura_api" {
-  family                   = "sura-api"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = "1024" # 1 vCPU
-  memory                   = "2048" # 2 GB
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-
-  container_definitions = jsonencode([
-    {
-      name      = "sura-api"
-      image     = "${var.docker_image}:${var.docker_tag}"
-      essential = true
-
-      portMappings = [
-        {
-          containerPort = 8080
-          hostPort      = 8080
-          protocol      = "tcp"
-        }
-      ]
-
-      environment = [
-        {
-          name  = "ASPNETCORE_ENVIRONMENT"
-          value = "Production"
-        },
-        {
-          name  = "ASPNETCORE_URLS"
-          value = "http://+:8080"
-        }
-      ]
-
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.sura_api.name
-          "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "ecs"
-        }
-      }
-
-      healthCheck = {
-        command     = ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
-        interval    = 30
-        timeout     = 5
-        retries     = 3
-        startPeriod = 60
-      }
-    }
-  ])
-
-  tags = {
-    Name        = "sura-api-task"
-    Environment = "Production"
-  }
-}
-
-# ECS Service
-resource "aws_ecs_service" "sura_api" {
-  name            = "sura-api-service"
-  cluster         = aws_ecs_cluster.sura.id
-  task_definition = aws_ecs_task_definition.sura_api.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
-
-  network_configuration {
-    subnets          = data.aws_subnets.default.ids
-    security_groups  = [aws_security_group.sura_api.id]
-    assign_public_ip = true
-  }
-
-  health_check_grace_period_seconds = 60
-
-  tags = {
-    Name        = "sura-api-service"
-    Environment = "Production"
-  }
-}
-
-# Outputs
-output "cluster_name" {
-  description = "Nombre del cluster ECS"
-  value       = aws_ecs_cluster.sura.name
-}
-
-output "service_name" {
-  description = "Nombre del servicio ECS"
-  value       = aws_ecs_service.sura_api.name
-}
-
-output "task_definition" {
-  description = "Task definition ARN"
-  value       = aws_ecs_task_definition.sura_api.arn
-}
-
-output "log_group" {
-  description = "CloudWatch Log Group"
-  value       = aws_cloudwatch_log_group.sura_api.name
+output "api_url" {
+  value = "http://${aws_instance.sura_api.public_ip}:8080"
 }

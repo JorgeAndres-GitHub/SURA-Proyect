@@ -5,7 +5,7 @@ variable "aws_region" {
 }
 
 variable "docker_image" {
-  description = "Imagen de Docker desde DockerHub"
+  description = "Imagen Docker desde DockerHub"
   type        = string
 }
 
@@ -13,4 +13,9 @@ variable "docker_tag" {
   description = "Tag de la imagen Docker"
   type        = string
   default     = "latest"
+}
+
+variable "key_name" {
+  description = "Nombre del par de claves SSH para EC2"
+  type        = string
 }
