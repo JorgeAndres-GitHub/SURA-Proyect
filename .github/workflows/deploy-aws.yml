@@ -1,80 +1,55 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
+name: Deploy DockerHub Image to EC2
 
-provider "aws" {
-  region = var.aws_region
-}
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    types:
+      - completed
 
-# VPC por defecto
-data "aws_vpc" "default" {
-  default = true
-}
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
 
-# Subnets dentro de la VPC por defecto
-data "aws_subnets" "default" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
-}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-# Security group para permitir tráfico HTTP (puerto 8080)
-resource "aws_security_group" "sura_sg" {
-  name        = "sura-ec2-sg"
-  description = "Permite tráfico HTTP para la API"
-  vpc_id      = data.aws_vpc.default.id
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init
 
-  tags = {
-    Name = "sura-ec2-sg"
-  }
-}
+      - name: Terraform Plan
+        working-directory: ./terraform
+        run: |
+          terraform plan \
+            -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -var="dockerhub_username=${{ secrets.DOCKERHUB_USERNAME }}" \
+            -var="dockerhub_token=${{ secrets.DOCKERHUB_TOKEN }}" \
+            -var="docker_image=${{ secrets.DOCKERHUB_USERNAME }}/sura-proyect" \
+            -var="docker_tag=latest" \
+            -out=tfplan
 
-# Instancia EC2
-resource "aws_instance" "sura_ec2" {
-  ami                         = "ami-0c7217cdde317cfec" # Ubuntu 22.04 LTS (us-east-1)
-  instance_type               = "t3.micro"
-  subnet_id                   = data.aws_subnets.default.ids[0]  # ✅ Usa la primera subnet disponible
-  vpc_security_group_ids      = [aws_security_group.sura_sg.id]
-  associate_public_ip_address = true
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve tfplan
 
-  user_data = <<-EOF
-              #!/bin/bash
-              apt-get update -y
-              apt-get install -y docker.io
-              systemctl start docker
-              systemctl enable docker
-
-              docker login -u ${var.dockerhub_username} -p ${var.dockerhub_token}
-              docker pull ${var.docker_image}:${var.docker_tag}
-              docker run -d -p 8080:8080 ${var.docker_image}:${var.docker_tag}
-              EOF
-
-  tags = {
-    Name = "sura-ec2-instance"
-  }
-}
-
-output "public_ip" {
-  description = "Dirección IP pública de la instancia"
-  value       = aws_instance.sura_ec2.public_ip
-}
+      - name: Show Public IP
+        working-directory: ./terraform
+        run: |
+          PUBLIC_IP=$(terraform output -raw public_ip)
+          echo "✅ API desplegada correctamente"
+          echo "🌍 URL pública: http://$PUBLIC_IP:8080"
+          echo "🏥 Endpoint de salud: http://$PUBLIC_IP:8080/health"
