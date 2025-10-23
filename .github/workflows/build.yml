@@ -45,15 +45,17 @@ jobs:
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
-      - name: Build and analyze
+      - name: Build, test and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          [System.Console]::WriteLine("Starting SonarQube analysis...")
+          [System.Console]::WriteLine("🚀 Starting SonarQube analysis from repository root...")
 
-          # Iniciar el análisis de SonarQube
-          .\.sonar\scanner\dotnet-sonarscanner begin `
+          # Ejecutar todo desde el directorio raíz (donde está el .sln)
+          $scanner = ".\.sonar\scanner\dotnet-sonarscanner"
+
+          & $scanner begin `
             /k:"TU_PROYECTO_SONARCLOUD" `
             /o:"TU_ORGANIZACION_SONARCLOUD" `
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
@@ -61,29 +63,21 @@ jobs:
             /d:sonar.cs.opencover.reportsPaths="TestSURAConcept/**/coverage.opencover.xml" `
             /d:sonar.scanner.scanAll=false
 
-          # Restaurar dependencias y compilar
           dotnet restore
           dotnet build --no-restore SURAConcept.sln
 
-          [System.Console]::WriteLine("Build completed. Running tests with coverage...")
-
-          # Ejecutar pruebas unitarias con cobertura de código
+          [System.Console]::WriteLine("🧪 Running tests with coverage...")
           dotnet test TestSURAConcept/TestSURAConcept.csproj --no-build --verbosity normal `
             /p:CollectCoverage=true `
             /p:CoverletOutputFormat=opencover `
             /p:CoverletOutput=coverage.opencover.xml
 
-          [System.Console]::WriteLine("Checking if coverage.opencover.xml was generated...")
-
-          # Verificar si el archivo de cobertura existe
           if (Test-Path "TestSURAConcept/coverage.opencover.xml") {
-            [System.Console]::WriteLine("✅ Coverage file found. Proceeding with SonarQube analysis...")
+            [System.Console]::WriteLine("✅ Coverage file found.")
           } else {
-            [System.Console]::WriteLine("❌ ERROR: coverage.opencover.xml not found. Exiting...")
+            [System.Console]::WriteLine("❌ coverage.opencover.xml not found, exiting...")
             exit 1
           }
 
-          # Finalizar análisis de SonarQube
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-
-          [System.Console]::WriteLine("SonarQube analysis completed successfully.")
+          & $scanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          [System.Console]::WriteLine("🎯 SonarQube analysis completed successfully.")
