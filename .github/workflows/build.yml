@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # necesario para un análisis preciso de SonarQube
+          fetch-depth: 0
 
       - name: Cache SonarQube Cloud packages
         uses: actions/cache@v4
@@ -47,7 +47,7 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build and analyze start
+      - name: Begin SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
@@ -56,15 +56,22 @@ jobs:
             /k:"JorgeAndres-GitHub_SURA-Proyect" `
             /o:"jorgeandres-github" `
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+            /d:sonar.cs.opencover.reportsPaths="TestSURAConcept/coverage.opencover.xml" `
+            /d:sonar.verbose=true
 
       - name: Build solution
         run: dotnet build --no-restore
 
       - name: Run unit tests with coverage
-        run: dotnet test .\TestSURAConcept\TestSURAConcept.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=.\coverage.opencover.xml
+        run: dotnet test .\TestSURAConcept\TestSURAConcept.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=.\TestSURAConcept\coverage.opencover.xml
 
-      - name: Finish analysis
+      - name: Upload coverage report artifact (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: TestSURAConcept/coverage.opencover.xml
+
+      - name: End SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
