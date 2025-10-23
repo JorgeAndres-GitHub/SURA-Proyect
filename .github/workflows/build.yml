@@ -15,18 +15,15 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu'
-      
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
       - name: Cache SonarQube Cloud packages
         uses: actions/cache@v4
         with:
           path: ~\sonar\cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      
       - name: Cache SonarQube Cloud scanner
         id: cache-sonar-scanner
         uses: actions/cache@v4
@@ -34,77 +31,39 @@ jobs:
           path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
-      
       - name: Install SonarQube Cloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: powershell
         run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory -Force
+          New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-      
-      - name: Build, test and analyze
+      - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          $ErrorActionPreference = "Stop"
+          Write-Host "Starting SonarQube analysis..."
+          # Iniciar el análisis de SonarQube (ya estamos en la raíz donde está el .sln)
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"YOUR_PROJECT_KEY" /o:"YOUR_ORGANIZATION_KEY" `
+          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+          /d:sonar.host.url="https://sonarcloud.io" `
+          /d:sonar.cs.opencover.reportsPaths="TestSURAConcept/**/coverage.opencover.xml" `
+          /d:sonar.scanner.scanAll=false
           
-          Write-Host "Starting SonarQube analysis from repository root..."
-          
-          $scanner = ".\.sonar\scanner\dotnet-sonarscanner"
-          
-          # Begin SonarQube analysis
-          Write-Host "Starting SonarScanner begin..."
-          & $scanner begin `
-            /k:"TU_PROYECTO_SONARCLOUD" `
-            /o:"TU_ORGANIZACION_SONARCLOUD" `
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-            /d:sonar.host.url="https://sonarcloud.io" `
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
-          
-          if ($LASTEXITCODE -ne 0) {
-            Write-Host "ERROR: SonarScanner begin failed with exit code: $LASTEXITCODE"
-            exit $LASTEXITCODE
-          }
-          
-          # Restore dependencies
-          Write-Host "Restoring dependencies..."
-          dotnet restore SURAConcept.sln
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          
-          # Build solution
-          Write-Host "Building solution..."
-          dotnet build SURAConcept.sln --no-restore --configuration Release
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          
-          # Run tests with coverage
-          Write-Host "Running tests with coverage..."
-          dotnet test TestSURAConcept/TestSURAConcept.csproj `
-            --no-build `
-            --configuration Release `
-            --verbosity normal `
-            /p:CollectCoverage=true `
-            /p:CoverletOutputFormat=opencover `
-            /p:CoverletOutput=./coverage.opencover.xml
-          
-          if ($LASTEXITCODE -ne 0) { 
-            Write-Host "WARNING: Tests failed but continuing with analysis..."
-          }
-          
-          # Verify coverage file exists
+          # Restaurar dependencias y compilar
+          dotnet restore
+          dotnet build --no-restore SURAConcept.sln
+          Write-Host "Build completed. Running tests with coverage..."
+          # Ejecutar pruebas unitarias con cobertura de código
+          dotnet test TestSURAConcept/TestSURAConcept.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=coverage.opencover.xml
+          Write-Host "Checking if coverage.opencover.xml was generated..."
+          # Verificar si el archivo de cobertura existe
           if (Test-Path "TestSURAConcept/coverage.opencover.xml") {
-            Write-Host "SUCCESS: Coverage file found at: TestSURAConcept/coverage.opencover.xml"
+            Write-Host "Coverage file found. Proceeding with SonarQube analysis..."
           } else {
-            Write-Host "WARNING: Coverage file not found, analysis will continue without coverage data"
+            Write-Host "ERROR: coverage.opencover.xml not found. Exiting..."
+            exit 1
           }
-          
-          # End SonarQube analysis
-          Write-Host "Ending SonarScanner analysis..."
-          & $scanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-          
-          if ($LASTEXITCODE -ne 0) {
-            Write-Host "ERROR: SonarScanner end failed with exit code: $LASTEXITCODE"
-            exit $LASTEXITCODE
-          }
-          
+          # Finalizar análisis de SonarQube
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           Write-Host "SonarQube analysis completed successfully."
