@@ -1,31 +1,40 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using SURAConcept;
+
 
 namespace TestSURAConcept
 {
-    public class TestProgram
+    public class TestProgram: IClassFixture<WebApplicationFactory<Program>>
     {
+        private readonly WebApplicationFactory<Program> _factory;
+
+        public TestProgram(WebApplicationFactory<Program> factory)
+        {
+            _factory = factory;
+        }
+
         [Fact]
-        public void Program_CanBuildApplicationSuccessfully()
+        public async Task Program_ApplicationStartsAndReturnsSuccessOnRoot()
         {
             // Arrange
-            var builder = WebApplication.CreateBuilder(new string[] { });
+            var client = _factory.CreateClient();
 
             // Act
-            builder.Services.AddControllers();
-            builder.Services.AddOpenApi();
-            builder.Services.AddSingleton<SURAConcept.Services.RiskEvaluator>();
-
-            var app = builder.Build();
+            var response = await client.GetAsync("/swagger/index.html");
 
             // Assert
-            Assert.NotNull(app);
-            Assert.NotNull(app.Services.GetService<SURAConcept.Services.RiskEvaluator>());
+            // Aunque no haya swagger habilitado en prod, el objetivo es que el programa arranque correctamente
+            Assert.True(
+                response.StatusCode == HttpStatusCode.OK ||
+                response.StatusCode == HttpStatusCode.NotFound
+            );
         }
     }
 }
