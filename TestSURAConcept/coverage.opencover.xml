@@ -2,9 +2,9 @@
 <CoverageSession>
   <Summary numSequencePoints="54" visitedSequencePoints="39" numBranchPoints="18" visitedBranchPoints="10" sequenceCoverage="72.22" branchCoverage="55.55" maxCyclomaticComplexity="26" minCyclomaticComplexity="26" visitedClasses="4" numClasses="5" visitedMethods="10" numMethods="11" />
   <Modules>
-    <Module hash="03155814-D64D-4D57-8A7E-B76787883FCF">
+    <Module hash="81255B3C-DB5C-4BC5-9D42-C963B5C33E44">
       <ModulePath>SURAConcept.dll</ModulePath>
-      <ModuleTime>2025-10-23T02:24:15</ModuleTime>
+      <ModuleTime>2025-10-23T03:19:40</ModuleTime>
       <ModuleName>SURAConcept</ModuleName>
       <Files>
         <File uid="1" fullPath="C:\Users\User\OneDrive\Escritorio\SURAConcept\SURAConcept\Program.cs" />
