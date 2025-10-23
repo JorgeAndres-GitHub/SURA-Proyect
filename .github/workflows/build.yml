@@ -51,7 +51,7 @@ jobs:
           /d:sonar.cs.opencover.reportsPaths="TestSURAConcept/coverage.opencover.xml" `
           /d:sonar.scanner.scanAll=false `
           /d:sonar.qualitygate.wait=true `
-          /d:sonar.newCode.referenceBranch=""
+          /d:sonar.newCode.referenceBranch=main
           
           if ($LASTEXITCODE -ne 0) {
             Write-Host "ERROR: SonarScanner begin failed with exit code: $LASTEXITCODE"
