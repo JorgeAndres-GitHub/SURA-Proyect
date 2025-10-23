@@ -44,7 +44,7 @@ jobs:
         run: |
           Write-Host "Starting SonarQube analysis..."
           # Iniciar el análisis de SonarQube (ya estamos en la raíz donde está el .sln)
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"YOUR_PROJECT_KEY" /o:"YOUR_ORGANIZATION_KEY" `
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"JorgeAndres-GitHub_SURA-Proyect" /o:"jorgeandres-github" `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
           /d:sonar.host.url="https://sonarcloud.io" `
           /d:sonar.cs.opencover.reportsPaths="TestSURAConcept/**/coverage.opencover.xml" `
