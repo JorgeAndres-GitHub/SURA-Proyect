@@ -1,4 +1,4 @@
-name: Deploy EC2 with Docker Container
+name: Deploy DockerHub Image to EC2
 
 on:
   workflow_run:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -35,18 +35,21 @@ jobs:
         working-directory: ./terraform
         run: |
           terraform plan \
+            -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -var="dockerhub_username=${{ secrets.DOCKERHUB_USERNAME }}" \
+            -var="dockerhub_token=${{ secrets.DOCKERHUB_TOKEN }}" \
             -var="docker_image=${{ secrets.DOCKERHUB_USERNAME }}/sura-proyect" \
             -var="docker_tag=latest" \
-            -var="aws_region=${{ secrets.AWS_REGION }}" \
-            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
             -out=tfplan
 
       - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
 
-      - name: Get Public URL
+      - name: Show Public IP
         working-directory: ./terraform
         run: |
-          echo "✅ API Public URL:"
-          terraform output -raw api_url
+          PUBLIC_IP=$(terraform output -raw public_ip)
+          echo "✅ API desplegada correctamente"
+          echo "🌍 URL pública: http://$PUBLIC_IP:8080"
+          echo "🏥 Endpoint de salud: http://$PUBLIC_IP:8080/health"
