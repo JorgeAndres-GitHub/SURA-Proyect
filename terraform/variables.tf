@@ -1,27 +1,25 @@
 variable "aws_region" {
-  description = "Región AWS"
+  description = "Región de AWS"
   type        = string
-  default     = "us-east-1"
+}
+
+variable "dockerhub_username" {
+  description = "Usuario de DockerHub"
+  type        = string
+}
+
+variable "dockerhub_token" {
+  description = "Token de acceso de DockerHub"
+  type        = string
 }
 
 variable "docker_image" {
-  description = "Imagen Docker desde DockerHub"
+  description = "Nombre de la imagen en DockerHub (sin tag)"
   type        = string
 }
 
 variable "docker_tag" {
-  description = "Tag de la imagen Docker"
+  description = "Tag de la imagen de Docker"
   type        = string
   default     = "latest"
-}
-
-variable "ami_id" {
-  description = "AMI de Ubuntu (por defecto us-east-1)"
-  type        = string
-  default     = "ami-0c7217cdde317cfec" # Ubuntu 22.04
-}
-
-variable "ssh_public_key" {
-  description = "Clave pública SSH para acceder al EC2"
-  type        = string
 }
