@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 on:
   workflow_run:
-    workflows: ["SonarQube"]
+    workflows: ["build.yml"]
     types:
       - completed
 
@@ -27,8 +27,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./SURAConcept 
+          file: ./SURAConcept/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sura-proyect:latest
 
