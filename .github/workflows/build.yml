@@ -44,7 +44,7 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           Write-Host "Starting SonarQube analysis..."
-          # Iniciar el análisis de SonarQube (ya estamos en la raíz donde está el .sln)
+          
           ./.sonar/scanner/dotnet-sonarscanner begin /k:"JorgeAndres-GitHub_SURA-Proyect" /o:"jorgeandres-github" `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
           /d:sonar.host.url="https://sonarcloud.io" `
@@ -57,19 +57,24 @@ jobs:
           }
           Write-Host "SonarScanner begin completed successfully."
           
-          # Restaurar dependencias y compilar
           dotnet restore
           dotnet build --no-restore SURAConcept.sln
           Write-Host "Build completed. Running tests with coverage..."
-          # Ejecutar pruebas unitarias con cobertura de código
+          
+          # Ejecutar tests - el workflow fallará automáticamente si algún test falla
           dotnet test TestSURAConcept/TestSURAConcept.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage.opencover.xml
-          Write-Host "Checking if coverage.opencover.xml was generated..."
-          # Verificar si el archivo de cobertura existe y mostrar su ubicación
+          
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "ERROR: Tests failed with exit code: $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
+          
+          Write-Host "Tests passed. Checking if coverage.opencover.xml was generated..."
+          
           if (Test-Path "TestSURAConcept/coverage.opencover.xml") {
             Write-Host "Coverage file found at: TestSURAConcept/coverage.opencover.xml"
             $fullPath = (Resolve-Path "TestSURAConcept/coverage.opencover.xml").Path
             Write-Host "Full path: $fullPath"
-            # Mostrar las primeras líneas del archivo para verificar que es válido
             Write-Host "First lines of coverage file:"
             Get-Content "TestSURAConcept/coverage.opencover.xml" -TotalCount 5
           } else {
@@ -78,10 +83,20 @@ jobs:
             Get-ChildItem -Path "TestSURAConcept" -Filter "*.xml" -Recurse
             exit 1
           }
-          # Finalizar análisis de SonarQube
+          
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          
           if ($LASTEXITCODE -ne 0) {
             Write-Host "ERROR: SonarScanner end failed with exit code: $LASTEXITCODE"
             exit $LASTEXITCODE
           }
           Write-Host "SonarQube analysis completed successfully."
+      
+      # NUEVO: Esperar y verificar el Quality Gate de SonarQube
+      - name: Wait for Quality Gate
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          scanMetadataReportFile: .sonarqube/out/.sonar/report-task.txt
