@@ -27,7 +27,7 @@ data "aws_subnets" "default" {
 # Security group para permitir tráfico HTTP (puerto 8080)
 resource "aws_security_group" "sura_sg" {
   name        = "sura-ec2-sg"
-  description = "Permite tráfico HTTP para la API"
+  description = "Permite trafico HTTP para la API"  
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
@@ -48,6 +48,7 @@ resource "aws_security_group" "sura_sg" {
     Name = "sura-ec2-sg"
   }
 }
+
 
 # Instancia EC2
 resource "aws_instance" "sura_ec2" {
