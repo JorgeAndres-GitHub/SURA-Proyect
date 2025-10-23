@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 on:
   workflow_run:
-    workflows: ["build.yml"]
+    workflows: ["SonarQube"]
     types:
       - completed
 
