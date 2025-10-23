@@ -20,7 +20,7 @@ namespace SURAConcept.Controllers
         public ActionResult<RiskResult> EvaluateRisk([FromBody] ClientData client)
         {
             if (client == null)
-                return BadRequest("Los datos del cliente son requeridos.");
+                return BadRequest("Los datos del cliente son necesarios.");
 
             var result = _evaluator.CalculateRisk(client);
             return Ok(result);
