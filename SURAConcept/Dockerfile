@@ -13,10 +13,10 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["SURAConcept.csproj", "."]
-RUN dotnet restore "./SURAConcept/SURAConcept.csproj"
+RUN dotnet restore "SURAConcept.csproj"
 COPY . .
-WORKDIR "/src/SURAConcept"
-RUN dotnet build "./SURAConcept.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src"
+RUN dotnet build "SURAConcept.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Esta fase se usa para publicar el proyecto de servicio que se copiará en la fase final.
 FROM build AS publish
