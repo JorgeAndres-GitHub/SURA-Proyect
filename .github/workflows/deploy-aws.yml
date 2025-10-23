@@ -1,4 +1,4 @@
-name: Deploy to AWS ECS
+name: Deploy to AWS EC2
 
 on:
   workflow_run:
@@ -10,9 +10,9 @@ jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -38,55 +38,16 @@ jobs:
             -var="docker_image=${{ secrets.DOCKERHUB_USERNAME }}/sura-proyect" \
             -var="docker_tag=latest" \
             -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -var="key_name=${{ secrets.AWS_KEY_NAME }}" \
             -out=tfplan
 
       - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
 
-      - name: Get Service Info
+      - name: Get EC2 Info
         working-directory: ./terraform
         run: |
-          echo "🚀 Deployment completed!"
-          echo "Cluster: $(terraform output -raw cluster_name)"
-          echo "Service: $(terraform output -raw service_name)"
-          echo "Task Definition: $(terraform output -raw task_definition)"
-          echo ""
-          echo "📋 Para ver logs:"
-          echo "aws logs tail $(terraform output -raw log_group) --follow"
-
-      - name: Get Task Public IP
-        run: |
-          echo "🔍 Obteniendo IP pública del contenedor..."
-          
-          CLUSTER=$(cd terraform && terraform output -raw cluster_name)
-          SERVICE=$(cd terraform && terraform output -raw service_name)
-          
-          # Obtener ARN de la tarea
-          TASK_ARN=$(aws ecs list-tasks \
-            --cluster $CLUSTER \
-            --service-name $SERVICE \
-            --desired-status RUNNING \
-            --query 'taskArns[0]' \
-            --output text)
-          
-          if [ "$TASK_ARN" != "None" ] && [ ! -z "$TASK_ARN" ]; then
-            # Obtener detalles de la tarea
-            TASK_DETAILS=$(aws ecs describe-tasks \
-              --cluster $CLUSTER \
-              --tasks $TASK_ARN)
-            
-            # Extraer ENI
-            ENI=$(echo $TASK_DETAILS | jq -r '.tasks[0].attachments[0].details[] | select(.name=="networkInterfaceId") | .value')
-            
-            # Obtener IP pública
-            PUBLIC_IP=$(aws ec2 describe-network-interfaces \
-              --network-interface-ids $ENI \
-              --query 'NetworkInterfaces[0].Association.PublicIp' \
-              --output text)
-            
-            echo "✅ API disponible en: http://$PUBLIC_IP:8080"
-            echo "🏥 Health check: http://$PUBLIC_IP:8080/health"
-          else
-            echo "⚠️ No se encontró una tarea en ejecución aún. Espera unos minutos."
-          fi
+          PUBLIC_IP=$(terraform output -raw instance_public_ip)
+          echo "🚀 API desplegada exitosamente en EC2"
+          echo "🌐 URL: http://$PUBLIC_IP:8080"
